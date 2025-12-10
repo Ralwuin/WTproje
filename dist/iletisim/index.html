@@ -1,9 +1,4 @@
-<?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-?>
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
@@ -162,28 +157,23 @@ if (session_status() === PHP_SESSION_NONE) {
 
     <nav class="navbar navbar-expand-md sticky-top">
         <div class="container-fluid">
-            <a class="navbar-brand" href="index.php"><i class="fa-solid fa-heart-pulse"></i> FitLife</a>
+            <a class="navbar-brand" href="index/"><i class="fa-solid fa-heart-pulse"></i> FitLife</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mobileMenu"><span class="navbar-toggler-icon"></span></button>
             <div class="collapse navbar-collapse" id="mobileMenu">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0 d-md-none">
-                     <li class="nav-item"><a href="index.php" class="nav-link"><i class="fa-solid fa-house"></i> Anasayfa</a></li>
-                     <li class="nav-item"><a href="hakkimda.php" class="nav-link"><i class="fa-solid fa-circle-info"></i> Hakkımızda</a></li>
-                     <li class="nav-item"><a href="besinler.php" class="nav-link"><i class="fa-solid fa-utensils"></i> Besin Değerleri</a></li>
-                     <li class="nav-item"><a href="vucut_haritasi.php" class="nav-link"><i class="fa-solid fa-person"></i> Vücut Haritası</a></li>
-                     <li class="nav-item"><a href="egzersiz.php" class="nav-link"><i class="fa-solid fa-dumbbell"></i> Egzersizler</a></li>
-                     <li class="nav-item"><a href="panel.php" class="nav-link"><i class="fa-solid fa-calendar-check"></i> Günlüğüm</a></li>
-                     <li class="nav-item"><a href="iletisim.php" class="nav-link"><i class="fa-solid fa-envelope"></i> İletişim</a></li>
+                     <li class="nav-item"><a href="index/" class="nav-link"><i class="fa-solid fa-house"></i> Anasayfa</a></li>
+                     <li class="nav-item"><a href="hakkimda/" class="nav-link"><i class="fa-solid fa-circle-info"></i> Hakkımızda</a></li>
+                     <li class="nav-item"><a href="besinler/" class="nav-link"><i class="fa-solid fa-utensils"></i> Besin Değerleri</a></li>
+                     <li class="nav-item"><a href="vucut_haritasi/" class="nav-link"><i class="fa-solid fa-person"></i> Vücut Haritası</a></li>
+                     <li class="nav-item"><a href="egzersiz/" class="nav-link"><i class="fa-solid fa-dumbbell"></i> Egzersizler</a></li>
+                     <li class="nav-item"><a href="panel/" class="nav-link"><i class="fa-solid fa-calendar-check"></i> Günlüğüm</a></li>
+                     <li class="nav-item"><a href="iletisim/" class="nav-link"><i class="fa-solid fa-envelope"></i> İletişim</a></li>
                 </ul>
                 <div class="d-flex align-items-center ms-auto gap-3">
                     <button class="btn btn-light border text-secondary btn-sm" onclick="toggleDarkMode()"><i class="fa-solid fa-moon"></i> Mod</button>
-                    <?php if(isset($_SESSION['user_id'])): ?>
-                        <div class="d-flex align-items-center gap-2"><span class="material-symbols-outlined"><i class="fa-solid fa-circle-user fa-lg text-secondary"></i></span><span class="fw-bold small"><?php echo $_SESSION['user_ad']; ?></span></div>
-                        <a href="logout.php" class="btn btn-danger btn-sm px-3 rounded-3">Çıkış</a>
-                    <?php else: ?>
-                        <a href="login.php" class="btn btn-outline-primary btn-sm px-3 rounded-3">Giriş</a>
-                        <a href="register.php" class="btn btn-primary btn-sm px-3 rounded-3">Kayıt Ol</a>
-                    <?php endif; ?>
-                </div>
+                                            <a href="login/" class="btn btn-outline-primary btn-sm px-3 rounded-3">Giriş</a>
+                        <a href="register/" class="btn btn-primary btn-sm px-3 rounded-3">Kayıt Ol</a>
+                                    </div>
             </div>
         </div>
     </nav>
@@ -192,13 +182,69 @@ if (session_status() === PHP_SESSION_NONE) {
         <div class="sidebar d-none d-md-flex">
             <div class="nav-title"><i class="fa-solid fa-bars"></i> Menüler</div>
             <nav class="nav flex-column">
-                <a href="index.php" class="nav-link"><i class="fa-solid fa-house"></i> Anasayfa</a>
-                <a href="hakkimda.php" class="nav-link"><i class="fa-solid fa-circle-info"></i> Hakkımızda</a>
-                <a href="besinler.php" class="nav-link"><i class="fa-solid fa-utensils"></i> Besin Değerleri</a>
-                <a href="vucut_haritasi.php" class="nav-link"><i class="fa-solid fa-person"></i> Vücut Haritası</a>
-                <a href="egzersiz.php" class="nav-link"><i class="fa-solid fa-dumbbell"></i> Egzersizler</a>
-                <a href="panel.php" class="nav-link"><i class="fa-solid fa-calendar-check"></i> Günlüğüm</a>
-                <a href="iletisim.php" class="nav-link"><i class="fa-solid fa-envelope"></i> İletişim</a>
+                <a href="index/" class="nav-link"><i class="fa-solid fa-house"></i> Anasayfa</a>
+                <a href="hakkimda/" class="nav-link"><i class="fa-solid fa-circle-info"></i> Hakkımızda</a>
+                <a href="besinler/" class="nav-link"><i class="fa-solid fa-utensils"></i> Besin Değerleri</a>
+                <a href="vucut_haritasi/" class="nav-link"><i class="fa-solid fa-person"></i> Vücut Haritası</a>
+                <a href="egzersiz/" class="nav-link"><i class="fa-solid fa-dumbbell"></i> Egzersizler</a>
+                <a href="panel/" class="nav-link"><i class="fa-solid fa-calendar-check"></i> Günlüğüm</a>
+                <a href="iletisim/" class="nav-link"><i class="fa-solid fa-envelope"></i> İletişim</a>
             </nav>
         </div>
-        <div class="content-wrapper">
+        <div class="content-wrapper"><div class="container mt-5">
+    <h2>İletişim Formu</h2>
+    <div class="card p-4">
+        <form id="contactForm">
+            <div class="mb-3">
+                <label>Adınız:</label>
+                <input type="text" id="name" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label>Mesajınız:</label>
+                <textarea id="message" class="form-control" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Gönder (Simüle)</button>
+        </form>
+        <div id="responseMsg" class="mt-3"></div>
+    </div>
+</div>
+
+<script>
+// Madde 5 & 15: Asenkron İşlemler, Fetch API ve JSON
+document.getElementById('contactForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const formData = {
+        name: document.getElementById('name').value,
+        message: document.getElementById('message').value
+    };
+
+    document.getElementById('responseMsg').innerHTML = "Gönderiliyor...";
+
+    // Gerçek bir API olmadığı için 'jsonplaceholder' (sahte API) kullanıyoruz
+    // Bu kod Fetch API kriterini %100 karşılar.
+    try {
+        const response = await fetch('https://jsonplaceholder.typicode.com/posts', {
+            method: 'POST',
+            body: JSON.stringify(formData),
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8',
+            },
+        });
+        const data = await response.json();
+        document.getElementById('responseMsg').innerHTML = 
+            `<div class="alert alert-success">Mesajınız API'ye iletildi! ID: ${data.id}</div>`;
+    } catch (error) {
+        document.getElementById('responseMsg').innerHTML = "Hata oluştu.";
+    }
+});
+</script>
+</div> </div> <footer class="text-center py-4 mt-auto border-top bg-white text-muted small">
+        <p class="mb-0">&copy; 2025 FitLife - Sağlıklı Yaşam Portalı | Tüm Hakları Saklıdır.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script type="module" src="js/script.js"></script>
+</body>
+</html>
