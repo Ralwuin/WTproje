@@ -1,64 +1,69 @@
-<?php 
-include 'classes/User.class.php';
+<?php
+include 'header.php';
+include 'baglanti.php';
 
-// Oturum başlatılmamışsa başlat
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $email = $_POST['email'];
+    $sifre = $_POST['sifre'];
 
-$mesaj = "";
+    $stmt = $db->prepare("SELECT * FROM users WHERE email = :email");
+    $stmt->execute(['email' => $email]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-if ($_POST) {
-    $user = new User();
-    $giris = $user->login($_POST['email'], $_POST['sifre']);
+    if ($user && password_verify($sifre, $user['sifre'])) {
+        // Session variable assignment
+        $_SESSION['user_id'] = $user['id'];
+        $_SESSION['user_name'] = $user['ad_soyad']; 
+        $_SESSION['user_email'] = $user['email'];
 
-    if ($giris) {
-        // Session (Oturum) Oluşturma (Kriter 37)
-        $_SESSION['user_id'] = $giris['id'];
-        $_SESSION['user_ad'] = $giris['ad_soyad'];
-
-        // Cookie (Çerez) Oluşturma - Beni Hatırla (Kriter 35)
         if (isset($_POST['beni_hatirla'])) {
-            setcookie("kullanici_email", $_POST['email'], time() + (86400 * 30), "/"); // 30 gün
+            setcookie("user_email", $email, time() + (86400 * 30), "/");
         }
 
-        header("Location: panel.php"); // Panele yönlendir
+        echo "<script>
+            alert('Giriş başarılı! Hoşgeldin " . addslashes($user['ad_soyad']) . "');
+            window.location.href = 'index.php';
+        </script>";
         exit;
     } else {
-        $mesaj = '<div class="alert alert-danger">Hatalı E-posta veya Şifre!</div>';
+        $error = "Hatalı E-Posta veya Şifre!";
     }
 }
-
-include 'header.php'; 
 ?>
 
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-5">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">Giriş Yap</h4>
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-header bg-primary text-white text-center py-3 rounded-top-4">
+                    <h4 class="mb-0 fw-bold">Giriş Yap</h4>
                 </div>
-                <div class="card-body">
-                    <?php echo $mesaj; ?>
+                <div class="card-body p-4">
+                    
+                    <?php if(isset($error)): ?>
+                        <div class="alert alert-danger"><?php echo $error; ?></div>
+                    <?php endif; ?>
+
                     <form method="post">
                         <div class="mb-3">
-                            <label>E-Posta:</label>
-                            <input type="email" name="email" class="form-control" 
-                                   value="<?php echo isset($_COOKIE['kullanici_email']) ? $_COOKIE['kullanici_email'] : ''; ?>" required>
+                            <label class="form-label text-muted fw-bold">E-Posta Adresi</label>
+                            <input type="email" name="email" class="form-control form-control-lg" required>
                         </div>
                         <div class="mb-3">
-                            <label>Şifre:</label>
-                            <input type="password" name="sifre" class="form-control" required>
+                            <label class="form-label text-muted fw-bold">Şifre</label>
+                            <input type="password" name="sifre" class="form-control form-control-lg" required>
                         </div>
                         
-                        <div class="mb-3 form-check">
+                        <div class="mb-4 form-check">
                             <input type="checkbox" class="form-check-input" name="beni_hatirla" id="check1">
-                            <label class="form-check-label" for="check1">Beni Hatırla</label>
+                            <label class="form-check-label text-muted" for="check1">Beni Hatırla</label>
                         </div>
 
-                        <button type="submit" class="btn btn-primary w-100">GİRİŞ YAP</button>
+                        <button type="submit" class="btn btn-primary w-100 btn-lg rounded-pill shadow-sm">GİRİŞ YAP</button>
                     </form>
+                </div>
+                <div class="card-footer text-center bg-white border-0 py-3 rounded-bottom-4">
+                    <small class="text-muted">Hesabın yok mu? <a href="register.php" class="text-primary fw-bold text-decoration-none">Kayıt Ol</a></small>
                 </div>
             </div>
         </div>

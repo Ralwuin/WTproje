@@ -1,96 +1,143 @@
-import { AdvancedCalculator } from './Calculator.js';
+/* FitLife Project - Main JavaScript File
+   Contains core logic for Dark Mode, BMI Calculation, and Class Structures.
+*/
 
 document.addEventListener("DOMContentLoaded", () => {
-    if (localStorage.getItem("theme") === "dark") {
+    // 1. Theme Persistence Check
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme === "dark") {
         document.body.classList.add("dark-mode");
     }
+
+    // 2. Initialize OOP Logic (Logs to console for verification)
+    console.log("System Initialized.");
+    const standartUye = new Sporcu("Misafir Kullanıcı", 70);
+    standartUye.bilgiVer();
 });
 
-window.toggleDarkMode = () => {
+/* =========================================================
+   FEATURE 1: DARK MODE TOGGLE
+   ========================================================= */
+function toggleDarkMode() {
     document.body.classList.toggle("dark-mode");
-    localStorage.setItem("theme", document.body.classList.contains("dark-mode") ? "dark" : "light");
-};
+    
+    // Save preference to LocalStorage
+    if (document.body.classList.contains("dark-mode")) {
+        localStorage.setItem("theme", "dark");
+    } else {
+        localStorage.setItem("theme", "light");
+    }
+}
 
-// VKİ Hesaplama ve Grafik Güncelleme Fonksiyonu
-window.vkiHesapla = () => {
-    const boyVal = document.getElementById("boy").value;
-    const kiloVal = document.getElementById("kilo").value;
-    const yasVal = document.getElementById("yas").value; // Yaş verisini alıyoruz
+/* =========================================================
+   FEATURE 2: BMI CALCULATION
+   ========================================================= */
+function vkiHesapla() {
+    // Retrieve input values
+    const yasInput = document.getElementById("yas");
+    const boyInput = document.getElementById("boy");
+    const kiloInput = document.getElementById("kilo");
+    const sonucDiv = document.getElementById("sonucAlani");
 
-    if (boyVal === "" || kiloVal === "" || yasVal === "") {
-        alert("Lütfen tüm alanları (Boy, Kilo, Yaş) doldurunuz.");
+    if (!boyInput || !kiloInput || !yasInput) {
+        console.error("Form elements not found.");
         return;
     }
 
-    // OOP: Sınıfı çağırıyoruz
-    const calc = new AdvancedCalculator(boyVal, kiloVal, yasVal);
-    const result = calc.calculate();
+    const yas = Number(yasInput.value);
+    const boy = Number(boyInput.value);
+    const kilo = Number(kiloInput.value);
 
-    if (result) {
-        const status = calc.getStatus(result);
+    // Validation
+    if (boy > 0 && kilo > 0 && yas > 0) {
+        // Formula: Weight / (Height(m) * Height(m))
+        const boyMetre = boy / 100;
+        const vki = (kilo / (boyMetre * boyMetre)).toFixed(2);
         
-        // 1. Sonucu Yazdır
-        const sonucDiv = document.getElementById("sonucAlani");
+        let durum = "";
+        let renkClass = "";
+
+        // Logic
+        if (vki < 18.5) { 
+            durum = "Zayıf"; 
+            renkClass = "text-warning";
+        } else if (vki < 25) { 
+            durum = "Normal (Sağlıklı)"; 
+            renkClass = "text-success";
+        } else if (vki < 30) { 
+            durum = "Fazla Kilolu"; 
+            renkClass = "text-warning";
+        } else { 
+            durum = "Obez"; 
+            renkClass = "text-danger";
+        }
+
+        // Render Result
+        // Removing 'alert-light' class dynamically to support dark mode better via CSS
+        sonucDiv.className = "alert text-center shadow-sm d-block"; 
+        sonucDiv.style.border = "2px solid var(--primary)";
+        
+        // Check current mode to set background for the result box specifically if needed,
+        // but default alert styling usually works. We ensure text visibility:
         sonucDiv.innerHTML = `
-            <div class="fs-4">VKİ: <strong>${result}</strong></div>
-            <div class="${status.color} fw-bold mt-1">${status.text}</div>
+            <h5 class="mt-2 fw-bold">VKİ Değeriniz: ${vki}</h5>
+            <p class="small mb-1">Yaş: ${yas}</p>
+            <p class="${renkClass} fw-bold mb-0 fs-5">${durum}</p>
         `;
-        sonucDiv.classList.remove("alert-light", "text-muted");
-        sonucDiv.classList.add("alert-white", "shadow-sm"); // Biraz stil ekledik
-
-        // 2. Grafiği Güncelle (İbreyi Kaydır)
-        updateChart(result);
+    } else {
+        alert("Lütfen tüm alanları geçerli değerlerle doldurunuz.");
     }
-};
-
-// Grafik İbresini Hareket Ettiren Fonksiyon
-function updateChart(vki) {
-    const marker = document.getElementById("bmiMarker");
-    const chartContainer = document.getElementById("bmiChartContainer");
-    
-    // Grafik Görünür Olsun
-    chartContainer.style.display = "block";
-
-    // Basit bir orantı ile ibrenin % kaçta duracağını hesaplayalım.
-    // Skala: 15 (min) ile 40 (max) arası olsun.
-    let percentage = ((vki - 15) / (40 - 15)) * 100;
-
-    // Sınırları aşmasın (0 ile 100 arasında tut)
-    if (percentage < 0) percentage = 0;
-    if (percentage > 100) percentage = 100;
-
-    // İbreyi kaydır
-    marker.style.left = percentage + "%";
 }
 
-// Diğer Tablo fonksiyonları (Besinler sayfası için) aynı kalıyor
-window.searchTable = () => {
-    const input = document.getElementById("searchInput").value.toUpperCase();
-    const rows = Array.from(document.querySelectorAll("#besinTablosu tbody tr"));
-    rows.filter(row => {
-        const text = row.cells[0].textContent || row.cells[0].innerText;
-        const isMatch = text.toUpperCase().includes(input);
-        row.style.display = isMatch ? "" : "none";
-        return isMatch;
-    });
-};
+/* =========================================================
+   FEATURE 3: TABLE SEARCH/FILTER
+   ========================================================= */
+function searchTable() {
+    const input = document.getElementById("searchInput");
+    if (!input) return;
 
-window.sortTable = (n) => {
-    var table = document.getElementById("besinTablosu");
-    var rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
-    switching = true; dir = "asc"; 
-    while (switching) {
-        switching = false; rows = table.rows;
-        for (i = 1; i < (rows.length - 1); i++) {
-            shouldSwitch = false;
-            x = rows[i].getElementsByTagName("TD")[n];
-            y = rows[i + 1].getElementsByTagName("TD")[n];
-            var xContent = isNaN(parseFloat(x.innerHTML)) ? x.innerHTML.toLowerCase() : parseFloat(x.innerHTML);
-            var yContent = isNaN(parseFloat(y.innerHTML)) ? y.innerHTML.toLowerCase() : parseFloat(y.innerHTML);
-            if (dir == "asc") { if (xContent > yContent) { shouldSwitch = true; break; } } 
-            else if (dir == "desc") { if (xContent < yContent) { shouldSwitch = true; break; } }
+    const filter = input.value.toUpperCase();
+    const table = document.getElementById("besinTablosu");
+    const tr = table.getElementsByTagName("tr");
+
+    for (let i = 0; i < tr.length; i++) {
+        const td = tr[i].getElementsByTagName("td")[0];
+        if (td) {
+            const txtValue = td.textContent || td.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                tr[i].style.display = "";
+            } else {
+                tr[i].style.display = "none";
+            }
         }
-        if (shouldSwitch) { rows[i].parentNode.insertBefore(rows[i + 1], rows[i]); switching = true; switchcount ++; } 
-        else { if (switchcount == 0 && dir == "asc") { dir = "desc"; switching = true; } }
     }
-};
+}
+
+/* =========================================================
+   OOP STRUCTURE (Class Definition & Inheritance)
+   ========================================================= */
+
+// Base Class
+class Sporcu {
+    constructor(ad, kilo) {
+        this.ad = ad;
+        this.kilo = kilo;
+    }
+
+    bilgiVer() {
+        console.log(`[User Log]: ${this.ad}, Weight: ${this.kilo}kg`);
+    }
+}
+
+// Extended Class
+class PremiumSporcu extends Sporcu {
+    constructor(ad, kilo, paket) {
+        super(ad, kilo);
+        this.paket = paket;
+    }
+
+    // Override Method
+    bilgiVer() {
+        console.log(`[VIP Log]: ${this.ad} (${this.paket} Package)`);
+    }
+}

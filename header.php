@@ -1,4 +1,5 @@
 <?php
+// Session Management
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -77,6 +78,7 @@ if (session_status() === PHP_SESSION_NONE) {
             display: flex;
             align-items: center;
             gap: 12px;
+            text-decoration: none;
         }
         .nav-link:hover, .nav-link.active {
             background-color: var(--primary-light);
@@ -85,7 +87,6 @@ if (session_status() === PHP_SESSION_NONE) {
 
         .content-wrapper { flex: 1; padding: 2rem; overflow-y: auto; }
 
-        /* Kartlar */
         .modern-card {
             background: white;
             border: none;
@@ -104,52 +105,55 @@ if (session_status() === PHP_SESSION_NONE) {
         }
         .modern-card-body { padding: 1.5rem; }
 
-        /* ÖZEL RENK SINIFLARI (Light Mod için) */
-        .bg-teal-soft { background-color: #ecfdf5; color: #064e3b; }
-        .bg-blue-soft { background-color: #f0f9ff; color: #0c4a6e; }
-        .bg-yellow-soft { background-color: #fffbeb; color: #78350f; }
-
-        /* --- DARK MODE AYARLARI --- */
-        body.dark-mode { 
-            background-color: #0f172a; 
-            color: #f1f5f9; 
-        }
+        /* --- DARK MODE CONFIGURATION --- */
+        body.dark-mode { background-color: #0f172a; color: #f1f5f9; }
+        
         body.dark-mode .navbar, 
         body.dark-mode .sidebar, 
-        body.dark-mode .modern-card { 
-            background-color: #1e293b; 
+        body.dark-mode .modern-card,
+        body.dark-mode .card,
+        body.dark-mode .list-group-item { 
+            background-color: #1e293b !important; 
             border-color: #334155; 
-        }
-        
-        /* Dark modda o özel renkli kutuları koyu yap ve kenarlık ekle */
-        body.dark-mode .bg-teal-soft,
-        body.dark-mode .bg-blue-soft,
-        body.dark-mode .bg-yellow-soft,
-        body.dark-mode .bg-light {
-            background-color: #1e293b !important;
-            color: #e2e8f0 !important;
-            border: 1px solid #334155 !important;
+            color: #f1f5f9;
         }
 
-        /* İkon ve Metin Renk Düzeltmeleri */
-        body.dark-mode .text-dark { color: #f1f5f9 !important; }
+        /* Typography Colors in Dark Mode */
+        body.dark-mode h1, body.dark-mode h2, body.dark-mode h3, 
+        body.dark-mode h4, body.dark-mode h5, body.dark-mode h6,
+        body.dark-mode .text-dark, 
+        body.dark-mode .navbar-brand { 
+            color: #f1f5f9 !important; 
+        }
+        
         body.dark-mode .text-muted { color: #94a3b8 !important; }
-        body.dark-mode .text-secondary { color: #cbd5e1 !important; }
-        body.dark-mode .navbar-brand { color: #f1f5f9 !important; }
-        body.dark-mode .nav-link { color: #94a3b8; }
+        body.dark-mode .nav-link { color: #cbd5e1; }
         body.dark-mode .nav-link:hover { background-color: #334155; color: var(--primary); }
         
-        /* Tablo ve Form Düzeltmeleri */
-        body.dark-mode .table { color: #f8fafc; border-color: #334155; }
-        body.dark-mode .table thead th { background-color: #0f172a; color: white; border-color: #334155; }
-        body.dark-mode .table tbody td { background-color: #1e293b; border-color: #334155; color: #cbd5e1; }
-        body.dark-mode .table-hover tbody tr:hover td { background-color: #334155; }
+        /* Form Elements Dark Mode */
         body.dark-mode .form-control, body.dark-mode .form-select { 
             background-color: #334155; border-color: #475569; color: white; 
         }
-        body.dark-mode .form-control::placeholder { color: #94a3b8; }
-        body.dark-mode .modal-content { background-color: #1e293b; color: white; border: 1px solid #334155; }
-        body.dark-mode .btn-close { filter: invert(1) grayscale(100%) brightness(200%); }
+        body.dark-mode .form-control::placeholder { color: #cbd5e1; }
+        
+        /* Accordion (Hakkımızda Sayfası) Fix */
+        body.dark-mode .accordion-item { background-color: #1e293b; border-color: #334155; color: #f1f5f9; }
+        body.dark-mode .accordion-button { background-color: #1e293b; color: #f1f5f9; }
+        body.dark-mode .accordion-button:not(.collapsed) { 
+            background-color: #334155; color: var(--primary) !important; box-shadow: none;
+        }
+
+        /* Table (Besinler Sayfası) Fix */
+        body.dark-mode .table { color: #f1f5f9 !important; border-color: #334155; }
+        body.dark-mode .table thead th { 
+            background-color: #0f172a; color: #f1f5f9; border-color: #334155; 
+        }
+        body.dark-mode .table tbody td { 
+            background-color: #1e293b; color: #f1f5f9; border-color: #334155; 
+        }
+        body.dark-mode .table-hover tbody tr:hover td { 
+            background-color: #334155; color: #fff;
+        }
 
         @media (max-width: 768px) { .sidebar { display: none; } }
     </style>
@@ -163,7 +167,9 @@ if (session_status() === PHP_SESSION_NONE) {
     <nav class="navbar navbar-expand-md sticky-top">
         <div class="container-fluid">
             <a class="navbar-brand" href="index.php"><i class="fa-solid fa-heart-pulse"></i> FitLife</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mobileMenu"><span class="navbar-toggler-icon"></span></button>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mobileMenu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
             <div class="collapse navbar-collapse" id="mobileMenu">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0 d-md-none">
                      <li class="nav-item"><a href="index.php" class="nav-link"><i class="fa-solid fa-house"></i> Anasayfa</a></li>
@@ -175,10 +181,15 @@ if (session_status() === PHP_SESSION_NONE) {
                      <li class="nav-item"><a href="iletisim.php" class="nav-link"><i class="fa-solid fa-envelope"></i> İletişim</a></li>
                 </ul>
                 <div class="d-flex align-items-center ms-auto gap-3">
-                    <button class="btn btn-light border text-secondary btn-sm" onclick="toggleDarkMode()"><i class="fa-solid fa-moon"></i> Mod</button>
+                    <button class="btn btn-light border text-secondary btn-sm" onclick="toggleDarkMode()">
+                        <i class="fa-solid fa-moon"></i> Mod
+                    </button>
+                    
                     <?php if(isset($_SESSION['user_id'])): ?>
-                        <div class="d-flex align-items-center gap-2"><span class="material-symbols-outlined"><i class="fa-solid fa-circle-user fa-lg text-secondary"></i></span><span class="fw-bold small"><?php echo $_SESSION['user_ad']; ?></span></div>
-                        <a href="logout.php" class="btn btn-danger btn-sm px-3 rounded-3">Çıkış</a>
+                        <span class="text-muted small fw-bold d-none d-lg-block">
+                            Merhaba, <?php echo htmlspecialchars($_SESSION['user_name'] ?? 'Sporcu'); ?>
+                        </span>
+                        <a href="logout.php" class="btn btn-outline-danger btn-sm px-3 rounded-3">Çıkış Yap</a>
                     <?php else: ?>
                         <a href="login.php" class="btn btn-outline-primary btn-sm px-3 rounded-3">Giriş</a>
                         <a href="register.php" class="btn btn-primary btn-sm px-3 rounded-3">Kayıt Ol</a>
@@ -190,7 +201,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
     <div class="main-layout">
         <div class="sidebar d-none d-md-flex">
-            <div class="nav-title"><i class="fa-solid fa-bars"></i> Menüler</div>
+            <h6 class="text-uppercase text-muted small fw-bold mb-3 px-3 mt-2">Menüler</h6>
             <nav class="nav flex-column">
                 <a href="index.php" class="nav-link"><i class="fa-solid fa-house"></i> Anasayfa</a>
                 <a href="hakkimda.php" class="nav-link"><i class="fa-solid fa-circle-info"></i> Hakkımızda</a>
