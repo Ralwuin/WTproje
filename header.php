@@ -1,5 +1,5 @@
 <?php
-// Session Management
+// Oturum başlatma kontrolü (Her sayfanın en başında olmalı)
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -105,7 +105,7 @@ if (session_status() === PHP_SESSION_NONE) {
         }
         .modern-card-body { padding: 1.5rem; }
 
-        /* --- DARK MODE CONFIGURATION --- */
+        /* Dark Mode Ayarları */
         body.dark-mode { background-color: #0f172a; color: #f1f5f9; }
         
         body.dark-mode .navbar, 
@@ -118,7 +118,6 @@ if (session_status() === PHP_SESSION_NONE) {
             color: #f1f5f9;
         }
 
-        /* Typography Colors in Dark Mode */
         body.dark-mode h1, body.dark-mode h2, body.dark-mode h3, 
         body.dark-mode h4, body.dark-mode h5, body.dark-mode h6,
         body.dark-mode .text-dark, 
@@ -130,29 +129,20 @@ if (session_status() === PHP_SESSION_NONE) {
         body.dark-mode .nav-link { color: #cbd5e1; }
         body.dark-mode .nav-link:hover { background-color: #334155; color: var(--primary); }
         
-        /* Form Elements Dark Mode */
         body.dark-mode .form-control, body.dark-mode .form-select { 
             background-color: #334155; border-color: #475569; color: white; 
         }
         body.dark-mode .form-control::placeholder { color: #cbd5e1; }
         
-        /* Accordion (Hakkımızda Sayfası) Fix */
+        /* Tablo Düzeltmeleri */
+        body.dark-mode .table { color: #f1f5f9 !important; border-color: #334155; }
+        body.dark-mode .table thead th { background-color: #0f172a; color: #f1f5f9; border-color: #334155; }
+        body.dark-mode .table tbody td { background-color: #1e293b; color: #f1f5f9; border-color: #334155; }
+        
         body.dark-mode .accordion-item { background-color: #1e293b; border-color: #334155; color: #f1f5f9; }
         body.dark-mode .accordion-button { background-color: #1e293b; color: #f1f5f9; }
         body.dark-mode .accordion-button:not(.collapsed) { 
             background-color: #334155; color: var(--primary) !important; box-shadow: none;
-        }
-
-        /* Table (Besinler Sayfası) Fix */
-        body.dark-mode .table { color: #f1f5f9 !important; border-color: #334155; }
-        body.dark-mode .table thead th { 
-            background-color: #0f172a; color: #f1f5f9; border-color: #334155; 
-        }
-        body.dark-mode .table tbody td { 
-            background-color: #1e293b; color: #f1f5f9; border-color: #334155; 
-        }
-        body.dark-mode .table-hover tbody tr:hover td { 
-            background-color: #334155; color: #fff;
         }
 
         @media (max-width: 768px) { .sidebar { display: none; } }

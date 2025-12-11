@@ -6,20 +6,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST['email'];
     $sifre = $_POST['sifre'];
 
+    // E-posta kontrolü
     $stmt = $db->prepare("SELECT * FROM users WHERE email = :email");
     $stmt->execute(['email' => $email]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
+    // Şifre doğrulama
     if ($user && password_verify($sifre, $user['sifre'])) {
-        // Session variable assignment
+        // Oturum değişkenlerini ata
         $_SESSION['user_id'] = $user['id'];
+        
+        // Veritabanındaki 'ad_soyad' sütununu session'a 'user_name' olarak atama
         $_SESSION['user_name'] = $user['ad_soyad']; 
         $_SESSION['user_email'] = $user['email'];
 
+        // Beni hatırla (Cookie)
         if (isset($_POST['beni_hatirla'])) {
             setcookie("user_email", $email, time() + (86400 * 30), "/");
         }
 
+        // JS ile Yönlendirme
         echo "<script>
             alert('Giriş başarılı! Hoşgeldin " . addslashes($user['ad_soyad']) . "');
             window.location.href = 'index.php';

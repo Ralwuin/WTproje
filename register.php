@@ -1,18 +1,40 @@
-<?php 
-include 'header.php'; 
-include 'classes/User.class.php';
+<?php
+include 'header.php';
+include 'baglanti.php'; // Veritabanı bağlantısı
 
-$mesaj = "";
+// Form gönderildi mi kontrol et
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $ad = $_POST['ad'];
+    $email = $_POST['email'];
+    $sifre = $_POST['sifre'];
+    $boy = !empty($_POST['boy']) ? $_POST['boy'] : NULL;
+    $kilo = !empty($_POST['kilo']) ? $_POST['kilo'] : NULL;
 
-if ($_POST) {
-    $user = new User();
-    // Formdan gelen verileri al
-    $kayit = $user->register($_POST['ad'], $_POST['email'], $_POST['sifre'], $_POST['boy'], $_POST['kilo']);
+    // E-posta kontrolü (Aynı mailden var mı?)
+    $check = $db->prepare("SELECT * FROM users WHERE email = ?");
+    $check->execute([$email]);
     
-    if ($kayit) {
-        $mesaj = '<div class="alert alert-success">Kayıt Başarılı! Giriş yapabilirsiniz.</div>';
+    if ($check->rowCount() > 0) {
+        $error = "Bu e-posta adresi zaten kayıtlı!";
     } else {
-        $mesaj = '<div class="alert alert-danger">Kayıt başarısız veya bu email zaten var.</div>';
+        // Şifreleme 
+        $hashed_password = password_hash($sifre, PASSWORD_DEFAULT);
+
+        // Veritabanına Ekleme
+        $sql = "INSERT INTO users (ad_soyad, email, sifre, boy, kilo) VALUES (?, ?, ?, ?, ?)";
+        $stmt = $db->prepare($sql);
+        $insert = $stmt->execute([$ad, $email, $hashed_password, $boy, $kilo]);
+
+        if ($insert) {
+            // İşlem bitince JS ile yönlendirme  (Sayfa donmasın diye)
+            echo "<script>
+                alert('Kayıt başarıyla oluşturuldu! Giriş ekranına yönlendiriliyorsunuz.');
+                window.location.href = 'login.php';
+            </script>";
+            exit;
+        } else {
+            $error = "Bir hata oluştu, lütfen tekrar deneyin.";
+        }
     }
 }
 ?>
@@ -20,38 +42,45 @@ if ($_POST) {
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-6">
-            <div class="card shadow">
-                <div class="card-header bg-warning text-dark">
-                    <h4 class="mb-0">Kayıt Ol</h4>
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-header bg-warning text-dark text-center py-3 rounded-top-4">
+                    <h4 class="mb-0 fw-bold">Aramıza Katıl</h4>
                 </div>
-                <div class="card-body">
-                    <?php echo $mesaj; ?>
+                <div class="card-body p-4">
+                    
+                    <?php if(isset($error)): ?>
+                        <div class="alert alert-danger"><?php echo $error; ?></div>
+                    <?php endif; ?>
+
                     <form method="post">
                         <div class="mb-3">
-                            <label>Ad Soyad:</label>
+                            <label class="form-label text-muted fw-bold">Ad Soyad</label>
                             <input type="text" name="ad" class="form-control" required>
                         </div>
                         <div class="mb-3">
-                            <label>E-Posta:</label>
+                            <label class="form-label text-muted fw-bold">E-Posta Adresi</label>
                             <input type="email" name="email" class="form-control" required>
                         </div>
                         <div class="mb-3">
-                            <label>Şifre:</label>
+                            <label class="form-label text-muted fw-bold">Şifre</label>
                             <input type="password" name="sifre" class="form-control" required>
                         </div>
-                        <div class="row">
+                        <div class="row mb-4">
                             <div class="col">
-                                <label>Boy (cm):</label>
+                                <label class="form-label text-muted fw-bold">Boy (cm)</label>
                                 <input type="number" name="boy" class="form-control" placeholder="170">
                             </div>
                             <div class="col">
-                                <label>Kilo (kg):</label>
+                                <label class="form-label text-muted fw-bold">Kilo (kg)</label>
                                 <input type="number" name="kilo" class="form-control" placeholder="70">
                             </div>
                         </div>
-                        <br>
-                        <button type="submit" class="btn btn-warning w-100">KAYIT OL</button>
+                        
+                        <button type="submit" class="btn btn-warning w-100 btn-lg rounded-pill shadow-sm fw-bold">KAYIT OL</button>
                     </form>
+                </div>
+                <div class="card-footer text-center bg-white border-0 py-3 rounded-bottom-4">
+                    <small class="text-muted">Zaten hesabın var mı? <a href="login.php" class="text-warning fw-bold text-decoration-none">Giriş Yap</a></small>
                 </div>
             </div>
         </div>
