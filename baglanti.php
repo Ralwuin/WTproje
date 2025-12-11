@@ -1,7 +1,7 @@
 <?php
 try {
     $host = "localhost";
-    $dbname = "fitlife_db";
+    $dbname = "fitlife";
     $username = "root";
     $password = "";
 

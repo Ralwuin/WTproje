@@ -4,37 +4,45 @@ include 'baglanti.php'; // Veritabanı bağlantısı
 
 // Form gönderildi mi kontrol et
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Formdan gelen verileri al
     $ad = $_POST['ad'];
     $email = $_POST['email'];
     $sifre = $_POST['sifre'];
+    // Boy ve kilo boş girilirse NULL olarak ayarla 
     $boy = !empty($_POST['boy']) ? $_POST['boy'] : NULL;
     $kilo = !empty($_POST['kilo']) ? $_POST['kilo'] : NULL;
 
-    // E-posta kontrolü (Aynı mailden var mı?)
-    $check = $db->prepare("SELECT * FROM users WHERE email = ?");
-    $check->execute([$email]);
-    
-    if ($check->rowCount() > 0) {
-        $error = "Bu e-posta adresi zaten kayıtlı!";
-    } else {
-        // Şifreleme 
-        $hashed_password = password_hash($sifre, PASSWORD_DEFAULT);
-
-        // Veritabanına Ekleme
-        $sql = "INSERT INTO users (ad_soyad, email, sifre, boy, kilo) VALUES (?, ?, ?, ?, ?)";
-        $stmt = $db->prepare($sql);
-        $insert = $stmt->execute([$ad, $email, $hashed_password, $boy, $kilo]);
-
-        if ($insert) {
-            // İşlem bitince JS ile yönlendirme  (Sayfa donmasın diye)
-            echo "<script>
-                alert('Kayıt başarıyla oluşturuldu! Giriş ekranına yönlendiriliyorsunuz.');
-                window.location.href = 'login.php';
-            </script>";
-            exit;
+    try {
+        // 1. E-posta kontrolü 
+        $check = $db->prepare("SELECT * FROM users WHERE email = ?");
+        $check->execute([$email]);
+        
+        if ($check->rowCount() > 0) {
+            $error = "Bu e-posta adresi zaten kayıtlı!";
         } else {
-            $error = "Bir hata oluştu, lütfen tekrar deneyin.";
+            // 2. Şifreleme (Güvenlik Kriteri)
+            $hashed_password = password_hash($sifre, PASSWORD_DEFAULT);
+
+            // 3. Veritabanına Ekleme
+            // Sütun isimleri veritabanı ile birebir aynı olmalı: ad_soyad, email, sifre, boy, kilo
+            $sql = "INSERT INTO users (ad_soyad, email, sifre, boy, kilo) VALUES (?, ?, ?, ?, ?)";
+            $stmt = $db->prepare($sql);
+            $insert = $stmt->execute([$ad, $email, $hashed_password, $boy, $kilo]);
+
+            if ($insert) {
+                // Kayıt başarılıysa JS ile yönlendir
+                echo "<script>
+                    alert('Kayıt başarıyla oluşturuldu! Giriş ekranına yönlendiriliyorsunuz.');
+                    window.location.href = 'login.php';
+                </script>";
+                exit;
+            } else {
+                $error = "Kayıt sırasında bir veritabanı hatası oluştu.";
+            }
         }
+    } catch (PDOException $e) {
+        // Veritabanı hatası olursa ekrana bas
+        $error = "Veritabanı Hatası: " . $e->getMessage();
     }
 }
 ?>

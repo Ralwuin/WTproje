@@ -27,3 +27,16 @@ CREATE TABLE `iletisim` (
 -- Örnek bir kullanıcı ekleyelim (Şifre: 12345)
 INSERT INTO `users` (`ad_soyad`, `email`, `sifre`, `boy`, `kilo`) VALUES
 ('Öğrenci Deneme', 'ogrenci@mail.com', '$2y$10$wS1.8/L8/7W.e/5.9/6.1.5', 175, 70);
+
+-- 3. Kullanıcı logları (Beslenme / Spor kayıtları)
+CREATE TABLE IF NOT EXISTS `logs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `ogun_adi` varchar(255) NOT NULL,
+  `kalori` int(11) NOT NULL,
+  `tur` enum('yemek','spor') NOT NULL DEFAULT 'yemek',
+  `tarih` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `logs_user_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

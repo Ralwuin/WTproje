@@ -2,7 +2,7 @@
 class Db {
     // LOCALHOST (XAMPP) AYARLARI
     private $host = "localhost";
-    private $dbname = "fitlife_db"; // Az önce oluşturduğumuz veritabanı adı
+    private $dbname = "fitlife"; // Veritabanı adı (fitlife.sql ile eşleşecek)
     private $username = "root";     // XAMPP standart kullanıcısı
     private $password = "";         // XAMPP standart şifresi (boş)
     public $connect;

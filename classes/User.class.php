@@ -9,7 +9,8 @@ class User extends Db {
             // Şifreyi hashleyerek güvenli hale getir
             $hashSifre = password_hash($sifre, PASSWORD_DEFAULT);
             
-            $sql = "INSERT INTO users (ad_soyad, email, password, boy, kilo) VALUES (?, ?, ?, ?, ?)";
+            // Veritabanında şifre sütunu `sifre` olarak tanımlı
+            $sql = "INSERT INTO users (ad_soyad, email, sifre, boy, kilo) VALUES (?, ?, ?, ?, ?)";
             $stmt = $this->connect->prepare($sql);
             return $stmt->execute([$ad, $email, $hashSifre, $boy, $kilo]);
         } catch (Exception $e) {
@@ -24,7 +25,8 @@ class User extends Db {
         $stmt->execute([$email]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($user && password_verify($sifre, $user['password'])) {
+        // Veritabanındaki şifre sütunu `sifre` olduğu için o alandan doğrula
+        if ($user && password_verify($sifre, $user['sifre'])) {
             return $user; // Giriş başarılı
         } else {
             return false; // Hatalı bilgiler

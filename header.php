@@ -1,5 +1,5 @@
 <?php
-// Oturum başlatma kontrolü (Her sayfanın en başında olmalı)
+// Session Başlatma (Her şeyden önce)
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -105,7 +105,7 @@ if (session_status() === PHP_SESSION_NONE) {
         }
         .modern-card-body { padding: 1.5rem; }
 
-        /* Dark Mode Ayarları */
+        
         body.dark-mode { background-color: #0f172a; color: #f1f5f9; }
         
         body.dark-mode .navbar, 
@@ -134,10 +134,6 @@ if (session_status() === PHP_SESSION_NONE) {
         }
         body.dark-mode .form-control::placeholder { color: #cbd5e1; }
         
-        /* Tablo Düzeltmeleri */
-        body.dark-mode .table { color: #f1f5f9 !important; border-color: #334155; }
-        body.dark-mode .table thead th { background-color: #0f172a; color: #f1f5f9; border-color: #334155; }
-        body.dark-mode .table tbody td { background-color: #1e293b; color: #f1f5f9; border-color: #334155; }
         
         body.dark-mode .accordion-item { background-color: #1e293b; border-color: #334155; color: #f1f5f9; }
         body.dark-mode .accordion-button { background-color: #1e293b; color: #f1f5f9; }
@@ -145,6 +141,11 @@ if (session_status() === PHP_SESSION_NONE) {
             background-color: #334155; color: var(--primary) !important; box-shadow: none;
         }
 
+        
+        body.dark-mode .table { color: #f1f5f9 !important; border-color: #334155; }
+        body.dark-mode .table thead th { background-color: #0f172a; color: #f1f5f9; border-color: #334155; }
+        body.dark-mode .table tbody td { background-color: #1e293b; color: #f1f5f9; border-color: #334155; }
+        
         @media (max-width: 768px) { .sidebar { display: none; } }
     </style>
 </head>
@@ -177,7 +178,7 @@ if (session_status() === PHP_SESSION_NONE) {
                     
                     <?php if(isset($_SESSION['user_id'])): ?>
                         <span class="text-muted small fw-bold d-none d-lg-block">
-                            Merhaba, <?php echo htmlspecialchars($_SESSION['user_name'] ?? 'Sporcu'); ?>
+                            Merhaba, <?php echo htmlspecialchars($_SESSION['user_name'] ?? 'Üye'); ?>
                         </span>
                         <a href="logout.php" class="btn btn-outline-danger btn-sm px-3 rounded-3">Çıkış Yap</a>
                     <?php else: ?>
